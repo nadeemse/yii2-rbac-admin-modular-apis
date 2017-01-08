@@ -1,0 +1,7 @@
+# Created by .ignore support plugin (hsz.mobi)
+assets/*
+vendor
+composer.lock
+.idea
+backend/runtime
+api/runtime

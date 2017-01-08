@@ -9,7 +9,7 @@ This is YII2 advanced template based project that have modular apis & rich featu
 
 1) Clone the repo
     
-    git clone git@bitbucket.org:nadeem_se/yii2-admin-modular-api.git
+    git clone https://github.com/nadeemse/yii2-rbac-admin-modular-apis.git
     
 2) Go into created project 
     
