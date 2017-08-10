@@ -211,7 +211,7 @@ customer-token: This is the token that you will get once call login API.
 
 HEADER PARAM: customer-token: AUTH_CUSTOMER_TOKEN
 
-# you can explore other routes by simply using this Repo, I am working on Unit tests & Swagger documentaiton. Will update soon.
+**You can explore other routes by simply using this Repo, I am working on Unit tests & Swagger documentaiton. Will update soon.**
 
 # Where can I access admin panel application
 
