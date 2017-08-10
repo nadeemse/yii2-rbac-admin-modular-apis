@@ -11,60 +11,52 @@ This is YII2 advanced template based project that have modular apis & rich featu
     
     git clone https://github.com/nadeemse/yii2-rbac-admin-modular-apis.git
     
-2) Go into created project 
+2) Go into directory created with this repo 
     
     cd yii2-admin-modular-api
 
-3) Install dependencies 3.2, If you don't have composer installed on your computer then first install composer follow step 3.1
-
- 3.1) Install composer on your local machine, follow the getcomposer.org. 
-    
-    
-```
-#!php
-
-https://getcomposer.org/doc/00-intro.md
-```
-
+3) Install dependencies 
+	If you don't have composer installed on your computer then first install the composer by following link https://getcomposer.org/doc/00-intro.md
  
- 3.2) If you already have installed composer then add asset plug that required by yii and run composer install
+4) Install Yii2 assets dependencies by following command 
   
+```
+composer global require "fxp/composer-asset-plugin:^1.2.0"
+```
+
+5) now time to install third party packages by simply running command 
 
 ```
-#!php
-
- composer global require "fxp/composer-asset-plugin:^1.2.0"
- composer install
-
+composer install
 ```
 
  
   
-4) Create a Database and update db configuration into common/config/main-local.php
+5.1) Create a new database and update db configuration into common/config/main-local.php, in my case db name is yii2Rbac.
 
      
 ```
-#!php
-
 'db' => [
                 'class' => 'yii\db\Connection',
-                'dsn' => 'mysql:host=127.0.0.1;dbname=YOU_DB_NAME',
-                'username' => 'DB_USERNAME',
-                'password' => 'DB_PASSWORD',
+                'dsn' => 'mysql:host=127.0.0.1;dbname=yii2Rbac',
+                'username' => 'DB_USERNAME', // This is as per your mysql server configuration. 
+                'password' => 'DB_PASSWORD', // This is as per your mysql server configuration 
                 'charset' => 'utf8',
      ],
 ```
 
    
-5) Run database migrations
-    
+5.2) Now time to migrate all databases table and seed defult data. If you are using Ubunut / OS then run below command on your root directory For window user follow step (5.3)
     
 ```
-#!php
-
 ./yii migrate --migrationPath=@app/migrations/mysql
 ```
 
+5.3) If you are using window operating system then run command on your root directory of the project 
+    
+```
+yii migrate --migrationPath=@app/migrations/mysql
+```
 
 6) Enjoy !!!
 
@@ -77,28 +69,34 @@ https://getcomposer.org/doc/00-intro.md
 
 3) In admin console, you can assign specific roles to sub admins for that we are using RBAC(Role-based access control: http://www.yiiframework.com/doc-2.0/guide-security-authorization.html)
 
-4) Admin panel & API are fully integrated with  email helper , that provides you option to send email by simply passing few param
-    (new EmailHelper)->sendEmail($to, $cc, $subject, $template, $data);
-    
-5) mainly MYSQL database for this project but there is MongoDB option as well,
-   For example, if you want to log APIS calls, user logs and another large amount of data then better to use MongoDB collections for that.
+4) Admin panel & API are fully integrated with  email helper, That's provide an option to send email with CC, attachment and with HTML content. 
+
+```
+$to : to whom you want to send email
+$cc: Array of emails to whom you want to send cc
+$subject: String 
+$template: html file that you want to use, in my case all emails files are under common/mail
+
+(new EmailHelper)->sendEmail($to, $cc, $subject, $template, $data);
+```
+
+5) This applicaiton is using MYSQL database if you want to use mongoDB then you have to follow mongodb with yii2 documentaiton.
    
-6) We have developed a nice media manager by using AWS S3
+6) This module is ship with Amazon S3 media manager to mange images, videos and other files. 
 
 7) TODO: Need to write unit testing and Swagger.
 
 
-# How to use MongoDB with this application
- Well it's really simple task, just follow these steps
- ## Un comment "mongodb" adapter from 
-```
-#!php
+# How to use mongoDb with this application
 
+You can use mongodb connection as well by following reference link https://github.com/yiisoft/yii2-mongodb.
+ 
+Un comment "mongodb" adapter from 
+```
 common/config/main-local.php
 ```
 
-and add yii2 MongoDB extension into composer and run the composer update 
-
+And add yii2 MongoDB extension into composer and run the composer update 
 
 ```
 #!php
@@ -107,53 +105,46 @@ and add yii2 MongoDB extension into composer and run the composer update
 ```
   
 # New migration for MySql
-simply run this command in terminal ./yii migrate/create --migrationPath=@app/migrations/mysql migration_name
+Run the command root directory of your project under terminal ./yii migrate/create --migrationPath=@app/migrations/mysql migration_name
 
 # How to create MongoDB collection
 
-MongoDB collection is same as MySQL table for that first you have ti make sure that you have installed MongoDB properly I mentioned above and then simply run 
-./yii mongodb-migrate/create --migrationPath=@app/migrations/mongodb migration_name
+MongoDB collection creation is same as mysql table creation. Make sure that you have installed MongoDB properly I mentioned above and then run below command on your project root directory. 
 
+```
+./yii mongodb-migrate/create --migrationPath=@app/migrations/mongodb migration_name
+```
 
 # How can I write a new API end point or new API module
-Well, it's a really simple to create a new API module, you have to define the module in modules section under api/config/main.php 
- 
- Example: 
- 
- 
-```
-#!php
-
-'settings' => [
-    'class' => 'api\modules\settings\Module'
- ],
-```
-
-
- 
-and then create a folder same as name settings under modules/folder name, and define the entry point for that module. for reference check settings module under api/modules/settings
-
-# How can I generate an Auth token 
-Well, it's very easy and this project already provided scope based access management .
+To create a new module, you have to define the module in file *api/config/main.php* in modules Array. for example if I want to create a new module *settings* then I need to define like below.
 
 Example: 
+
+```
+'settings' => [
+    'class' => 'api\modules\settings\Module'
+],
+```
+
+And then create a folder with same name settings under api/modules, and define the entry point for that module. for reference check settings module under api/modules/settings
+
+# How can I generate an Auth token 
+To create a access token you have to send a POST request to below endpoint with given credentials. 
 
 ACTION : POST
 URL : http://YOUR_API_END_POINT/v1/user/auth/token
 REQUEST BODY: 
-//Below information is for the DEMO purpose only, once you will install application then these scopes and credentials are available as a part of YII MIGRATION.
+//Below information is for the DEMO purpose only, these scopes and credentials are ship with YII MIGRATION.
 
 ```
-#!json
 {
-	"username": "api@nadeemakhtar.info",
+	"username": "api@nadeemakhtar.info", // you can create your own credentials 
 	"password": "#api",
 	"client_id": "testclient",
 	"client_secret": "testpass",
 	"grant_type": "password",
 	"scope": "account profile catalog root required-customer-token"
 }
-
 ```
 
 
@@ -168,19 +159,16 @@ Yes, this application is using RBAC for back-end resources management, so you ca
 
 Yes, We have integrated token based login system for Front-end Users as well. So it's very Easy signup/login/forgot-password/reset password.
 
-# You can find Login, Signup, forgot password links below 
 
+# YOUR_API_END_POINT
 
+This is application APIs endpoint, you have to create a virtual host and point it to api/web. 
 
-1: 
-# Signup: http://YOUR_API_END_POINT/v1/user/session/signup
-Request Data:
+# Signup API: http://YOUR_API_END_POINT/v1/user/session/signup
 
-
+Send a POST request to v1/user/session/signup with required informaiton. 
 
 ```
-#!json
-
 {
   "email": "nadeemakhtar.se@gmail.com",
   "password": "admin123",
@@ -193,16 +181,12 @@ Request Data:
   "dob": "2010-01-09"
 }
 ```
+ 
+# Login API: http://YOUR_API_END_POINT/v1/user/session/login
 
-
-2: 
-# Login: http://YOUR_API_END_POINT/v1/user/session/login
-Request Data: 
-
+Send post request to above end point with email and password. this API will return you a account auth-key that you have to store in your header to get access on account related APIS, like profile, reset password, update profile information etc. 
 
 ```
-#!json
-
 {
 	"email": "nadeemakhtar.se@gmail.com",
 	"password": "admin123"
@@ -210,59 +194,57 @@ Request Data:
 ```
 
 
-3: Forgot password: http://YOUR_API_END_POINT/v1/user/session/forgot-password
-Request Data: 
+# Forgot password API: http://YOUR_API_END_POINT/v1/user/session/forgot-password
 
+Send a post request to above link, system will send an email to provided email with reset password link. 
 
 ```
-#!json
-
 {
 	"email": "nadeemakhtar.se@gmail.com"
 }
 ```
 
 
-4: Profile link : http://YOUR_API_END_POINT/v1/user/account/profile?token=AUTH_APP_TOKEN
+# Profile link : http://YOUR_API_END_POINT/v1/user/account/profile?token=AUTH_APP_TOKEN
+
+customer-token: This is the token that you will get once call login API. 
+
 HEADER PARAM: customer-token: AUTH_CUSTOMER_TOKEN
 
+# you can explore other routes by simply using this Repo, I am working on Unit tests & Swagger documentaiton. Will update soon.
 
-## you can explore other routes by simply using this Repo, I Will write unit tests & Swagger documentation for better understanding.
+# Where can I access admin panel application
 
-## Where can I access admin panel application
-
-Well simply go to http://YOUR_BASE_URL/backend and you will see the backend application in running form 
+Create a virtual host and point it to backend/web and access it it browser. 
 
 Credentials for back-end:
 
 username/email: info@yii2admin.com
 pass: yii2Admin
 
-## Is this project allow multiple clients to access resources 
+# Multiple clients to access resources 
 
-Yes !!! you can do that by simply having multiple clients.
+You can define multiple clients and provide them scope to access APIS end point. 
+Clients Like: Website, IOS APP, Android APP
 
-## What if we will have multilingual requirements
+# Multilingual
 You can manage your application by simply passing app-locale header and system will give you response in required language(if that language is implemented on back-end) 
 
 
 ```
-#!json
 app-locale:en
 ```
 
-## What if we are operating our app in different timezone  
-You can pass app-tz header and the system will automatically pick your application/client time zone.
-
+# Multi Country & Timezones 
+You can pass app-tz header and the system will automatically pick application given timezone.
 
 ```
-#!json
 app-tz:asia/dubai
 ```
 
-
 If you need more information just drop me an email. 
 ### nadeemakhtar.se@gmail.com
+
 
 DIRECTORY STRUCTURE
 -------------------
